@@ -33,17 +33,17 @@ func NewBlock(nonce int, previousHash [32]byte) *Block {
 func (b *Block) Print() {
 	fmt.Printf("timestamp     %d\n", b.timestamp)
 	fmt.Printf("nonce         %d\n", b.nonce)
-	fmt.Printf("previous_hash %s\n", b.previousHash)
+	fmt.Printf("previous_hash %x\n", b.previousHash)
 	fmt.Printf("transactions  %s\n", b.transactions)
 }
 
 func (b *Block) Hash() [32]byte {
 	m, _ := json.Marshal(b)
-	fmt.Println(m)
+	fmt.Printf(string(m))
 	return sha256.Sum256([]byte(m))
 }
 
-func (b *Block) MarshalJSOn() ([]byte, error) {
+func (b *Block) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Timestamp    int64    `json:"timestamp"`
 		Nonce        int      `json:"nonce"`
@@ -75,6 +75,10 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	return b
 }
 
+func (bc *Blockchain) LastBlock() *Block {
+	return bc.chain[len(bc.chain)-1]
+}
+
 func (bc *Blockchain) Print() {
 	for i, block := range bc.chain {
 		fmt.Printf("%s Chain %d %s \n", strings.Repeat("=", 25), i, strings.Repeat("=", 25))
@@ -91,4 +95,13 @@ func init() {
 func main() {
 	blockChain := NewBlockchain()
 	blockChain.Print()
+
+	previousHash := blockChain.LastBlock().Hash()
+	blockChain.CreateBlock(5, previousHash)
+	blockChain.Print()
+
+	previousHash = blockChain.LastBlock().Hash()
+	blockChain.CreateBlock(2, previousHash)
+	blockChain.Print()
+
 }
