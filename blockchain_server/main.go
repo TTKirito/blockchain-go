@@ -198,6 +198,23 @@ func (bsc *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (bsc *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodPut:
+		bc := bsc.GetBlockchain()
+		replaced := bc.ResolveConflicts()
+		w.Header().Add("Content-Type", "application/json")
+		if replaced {
+			io.WriteString(w, string(utils.JsonStatus("success")))
+		} else {
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+		}
+	default:
+		log.Printf("ERROR: Invalid HTTP Method")
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
 func HelloWord(w http.ResponseWriter, req *http.Request) {
 	io.WriteString(w, "Hello World!")
 }
