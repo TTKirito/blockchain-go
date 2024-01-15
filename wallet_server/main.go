@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"flag"
-	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -100,7 +99,6 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 		buf := bytes.NewBuffer(m)
 
 		resp, _ := http.Post(ws.Gateway()+"/transactions", "application/json", buf)
-		fmt.Println(resp, "heeeeeeeeeeeeeeeeeee")
 		if resp.StatusCode == 201 {
 			io.WriteString(w, string(utils.JsonStatus("success")))
 			return
@@ -125,7 +123,7 @@ func init() {
 
 func main() {
 	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
-	gateway := flag.String("gateway", "http://127.0.0.1:5001", "Blockchain gateway")
+	gateway := flag.String("gateway", "http://0.0.0.0:5000", "Blockchain gateway")
 	flag.Parse()
 	app := NewWalletServer(uint16(*port), *gateway)
 	app.Run()
