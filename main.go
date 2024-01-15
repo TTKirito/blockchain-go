@@ -59,3 +59,5 @@ func main() {
 	// fmt.Printf("M %.1f\n", blockchain.CalculateTotalAmount(walletM.BlockchainAddress()))
 
 }
+
+// 51 attack
